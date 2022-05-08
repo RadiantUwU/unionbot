@@ -52,7 +52,7 @@ function startbot(errored: boolean = false) {
                 message.channel.send({embeds: [generateembed("Ping 🏓", "Pong!", "#00ff00")]});
                 break;
             case "runcode":
-                if (message.author.id !== "828718072872828930") return;
+                if (message.author.id != "828718072872828930") return;
                 try {
                     var code = args.join(" ");
                     code = code.slice(3 + 2 + 1, code.length - 3);
