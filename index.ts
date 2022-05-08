@@ -1,6 +1,6 @@
-import { MessageEmbed, Client, Intents, TextChannel, ColorResolvable } from "discord.js";
+import { MessageEmbed, Client, Intents, TextChannel, ColorResolvable, DMChannel } from "discord.js";
 const {max_number_of_restarts, version, server_id, bot_errors_id} = require('./config.json');
-const {bot_token} = require('./token.json');
+const {token} = require('./token.json');
 var number_of_restarts: number = 0
 function generateembed(title: string, description: string, color: ColorResolvable) {
     return new MessageEmbed()
@@ -42,11 +42,31 @@ function startbot(errored: boolean = false) {
         }
     })
     client.on('messageCreate', message => {
-        if (message.content === '~!ping') {
-            message.reply('pong');
+        if (message.author.bot) return;
+        if (message.channel.type === "DM") return;
+        if (!message.content.startsWith("~!")) return;
+        const command: string = message.content.split(" ")[0].slice(2);
+        const args: string[] = message.content.split(" ").slice(1);
+        switch (command) {
+            case "ping":
+                message.channel.send({embeds: [generateembed("Ping 🏓", "Pong!", "#00ff00")]});
+                break;
+            case "runcode":
+                if (message.author.id !== "828718072872828930") return;
+                try {
+                    var code = args.join(" ");
+                    code = code.slice(3 + 2 + 1, code.length - 3);
+                    var result = eval(code);
+                    if (result !== undefined) {
+                        message.channel.send({embeds: [generateembed("Run code 💻", "```\n" + result + "```", "#00ff00")]});
+                    }
+                }
+                catch (e) {
+                    message.channel.send({embeds: [generateembed("Run code 💻", "```\n" + e + "```", "#ff0000")]});
+                }
         }
     }
     );
-    client.login(bot_token);
+    client.login(token);
 }
 startbot();
