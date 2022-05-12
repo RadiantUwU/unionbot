@@ -2,5 +2,6 @@
     "max_number_of_restarts": 3,
     "version": "build 4",
     "server_id":972866100549255238,
-    "bot_errors_id":972922870697164900
+    "bot_errors_id":972922870697164900,
+    "user_id_of_person_who_runs_bot": "828718072872828930"
 }

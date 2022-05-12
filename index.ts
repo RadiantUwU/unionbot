@@ -1,5 +1,5 @@
 import { MessageEmbed, Client, Intents, TextChannel, ColorResolvable, DMChannel } from "discord.js";
-const {max_number_of_restarts, version, server_id, bot_errors_id} = require('./config.json');
+const {max_number_of_restarts, version, server_id, bot_errors_id, user_id_of_person_who_runs_bot} = require('./config.json');
 const {token} = require('./token.json');
 var number_of_restarts: number = 0
 function generateembed(title: string, description: string, color: ColorResolvable) {
@@ -51,8 +51,8 @@ function startbot(errored: boolean = false) {
             case "ping":
                 message.channel.send({embeds: [generateembed("Ping 🏓", "Pong!", "#00ff00")]});
                 break;
-            case "runcode":
-                if (message.author.id != "828718072872828930") return;
+            case "exec":
+                if (message.author.id !== user_id_of_person_who_runs_bot) return;
                 try {
                     var code = args.join(" ");
                     code = code.slice(3 + 2 + 1, code.length - 3);
@@ -63,6 +63,17 @@ function startbot(errored: boolean = false) {
                 }
                 catch (e) {
                     message.channel.send({embeds: [generateembed("Run code 💻", "```\n" + e + "```", "#ff0000")]});
+                }
+            case "execsilent":
+                if (message.author.id !== user_id_of_person_who_runs_bot) return;
+                if (message.deletable) message.delete();
+                try {
+                    var code = args.join(" ");
+                    code = code.slice(3 + 2 + 1, code.length - 3);
+                    eval(code);
+                }
+                catch (e) {
+                    console.error(e);
                 }
         }
     }
