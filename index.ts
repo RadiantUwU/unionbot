@@ -1,4 +1,15 @@
-import { MessageEmbed, Client, Intents, TextChannel, ColorResolvable, DMChannel } from "discord.js";
+import { MessageEmbed,
+        Client,
+        Intents,
+        TextChannel,
+        ColorResolvable,
+        DMChannel,
+        ActionRow,
+        TextInputComponent,
+        TextInputStyle,
+        Modal,
+        type ModalActionRowComponent,
+       } from "discord.js";
 const {max_number_of_restarts, version, server_id, bot_errors_id, user_id_of_person_who_runs_bot} = require('./config.json');
 const {token} = require('./token.json');
 var number_of_restarts: number = 0
@@ -12,7 +23,12 @@ function generateembed(title: string, description: string, color: ColorResolvabl
 }
 function startbot(errored: boolean = false) {
     var client = new Client({
-        intents: Intents.FLAGS.GUILDS | Intents.FLAGS.GUILD_MESSAGES
+        intents: Intents.FLAGS.GUILDS | Intents.FLAGS.GUILD_MESSAGES,
+        ws: {
+            properties: {
+                $browser: "Discord iOS" 
+            }
+        }
     });
     client.once('ready', () => {
         console.log('Ready!');
@@ -48,8 +64,13 @@ function startbot(errored: boolean = false) {
         const command: string = message.content.split(" ")[0].slice(2);
         const args: string[] = message.content.split(" ").slice(1);
         switch (command) {
-            case "ping":
-                message.channel.send({embeds: [generateembed("Ping 🏓", "Pong!", "#00ff00")]});
+            case "slash":
+                if (message.author.id !== user_id_of_person_who_runs_bot) return;
+                client.api.applications(client.user.id).guilds('guild id').commands.post({data: {
+                    name: 'apply',
+                    description: 'Apply for a partner position'
+                }})
+                message.channel.send({embeds: [generateembed("Deployed commands", "The command has been sucessefully deployed!", "#00ff00")]});
                 break;
             case "exec":
                 if (message.author.id !== user_id_of_person_who_runs_bot) return;
